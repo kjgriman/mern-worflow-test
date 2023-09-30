@@ -1,0 +1,36 @@
+{
+  "name": "test-mern",
+  "version": "1.0.0",
+  "description": "test mern sweetcherrytech",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch Server.js",
+    "start": "node Server.js",
+    "test": "mocha ./src/tests/*.spec.js",
+    "lintfix": "eslint . --fix",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "kerbin",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "chalk": "4.1.0",
+    "cors": "2.8.5",
+    "dotenv": "16.3.1",
+    "express": "4.18.2",
+    "mongodb": "6.1.0",
+    "mongoose": "7.5.3",
+    "supertest": "^6.3.3"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "standard": "17.1.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
+  }
+}
