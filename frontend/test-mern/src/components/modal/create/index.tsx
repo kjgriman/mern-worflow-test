@@ -10,13 +10,12 @@ interface SimpleDialogProps {
 export default function ModalCreate(props: SimpleDialogProps) {
 
     const { onClose, open } = props;
-
     const cancelButtonRef = useRef(null)
 
     const [initbox, setInixBox] = useState('')
     const [endbox, setEndBox] = useState('')
-
     const [arr, setArr] = useState([]);
+    const [arrAction, setArrActions] = useState([]);
 
     const addInput = () => {
         setArr(s => {
@@ -30,18 +29,37 @@ export default function ModalCreate(props: SimpleDialogProps) {
             ];
         });
     };
+    const addInputAction = () => {
+        setArrActions(s => {
+            return [
+                ...s,
+                {
+                    type: "text",
+                    value: "",
+                    id:''
+                }
+            ];
+        });
+    };
 
     const handleChange = (e: { preventDefault: () => void; target: { id: any; value: any; }; }) => {
         e.preventDefault();
-
         const index = e.target.id.split('_');
         setArr(s => {
             const newArr = s.slice();
-            
             newArr[index[1]].value = e.target.value;
             newArr[index[1]].id = e.target.id;
-
             return newArr;
+        });
+    };
+    const handleChangeAction = (e: { preventDefault: () => void; target: { id: any; value: any; }; }) => {
+        e.preventDefault();
+        const index = e.target.id.split('_');
+        setArrActions(s => {
+            const newArrActions = s.slice();
+            newArrActions[index[1]].value = e.target.value;
+            newArrActions[index[1]].id = e.target.id;
+            return newArrActions;
         });
     };
 
@@ -53,10 +71,6 @@ export default function ModalCreate(props: SimpleDialogProps) {
         setEndBox(e.target.value)
     }
     
-    useEffect(()=>{
-        console.log(arr);
-        
-    },[arr])
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -119,7 +133,7 @@ export default function ModalCreate(props: SimpleDialogProps) {
                                                     type="button"
                                                     disabled={initbox ? false : true}
                                                     className="disabled:bg-gray-200 inline-flex w-full justify-center rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                                                    onClick={() => onClose()}
+                                                    onClick={addInputAction}
                                                 >
                                                     + Actions
                                                 </button>
@@ -141,6 +155,7 @@ export default function ModalCreate(props: SimpleDialogProps) {
                                                     />
                                                 </div>
                                                 {/* dinamyc input  */}
+                                                Conditions
                                                 {arr.map((item:any, i) => {
                                                     return (
                                                         <div className="my-2">
@@ -156,8 +171,24 @@ export default function ModalCreate(props: SimpleDialogProps) {
                                                         </div>
                                                     );
                                                 })}
+                                                Actions
+                                                {arrAction.map((item:any, i) => {
+                                                    return (
+                                                        <div className="my-2">
+                                                            <input
+                                                                onChange={handleChangeAction}
+                                                                value={item.value}
+                                                                id={`action_${i}`}
+                                                                key={`action_key_${i}`}
+                                                                type={item.type}
+                                                                placeholder={`action Box ${i}`}
+                                                                className="block w-full rounded-md border-0 py-1.5 pl-2 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            />
+                                                        </div>
+                                                    );
+                                                })}
 
-                                                <FlowChartView init={initbox} end={endbox} conditions={arr} />
+                                                <FlowChartView init={initbox} end={endbox} conditions={arr} action={arrAction} />
                                             </div>
                                         </div>
                                     </div>

@@ -8,11 +8,7 @@ import ModalCreate from "../modal/create"
 
 
 export default function List(props: typeProps) {
-    // const {
-    //     srcLogoImg,
-    //     titleLogo,
-    //     navClassTW
-    // } = props
+   
 
     const [open, setOpen] = React.useState(false);
     const handleClickOpen = () => {
