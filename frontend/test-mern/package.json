@@ -16,7 +16,8 @@
     "react-dom": "^18.2.0",
     "react-organizational-chart": "^2.2.1",
     "react-simple-flowchart": "^1.2.4",
-    "reaflow": "^5.2.6"
+    "reaflow": "^5.2.6",
+    "swr": "^2.2.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",

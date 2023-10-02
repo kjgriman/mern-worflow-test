@@ -4,6 +4,8 @@ const chai = require('chai');
 const expect = chai.expect;
 const request = require('supertest');
 
+const WorkFlowModel = require('../models/workFlowModels')
+
 
 let app = require('../app');
 
@@ -12,17 +14,31 @@ let app = require('../app');
 
     describe('workflow check on /sync', () => {
         let hash, sampleItemVal;
-
-        beforeEach(() => {
-            hash = '1234567891';
-            sampleItemVal = {
-              name: 'sample item',
-              init: '10',
-              end: "5",
-              action: "5",
-              conditionals:[{name:'test'}]
-            };
+        const newDocument = new WorkFlowModel({
+          name: 'Your Name',
+          conditions: [{ type: 'condition_type', value: 'condition_value' }],
+          actions: [{ type: 'action_type', value: 'action_value' }],
+          start: 'START',
+          end: 'END',
         });
+        newDocument.save()
+        .then((result) => {
+          console.log('Document saved:', result);
+        })
+        .catch((error) => {
+          console.error('Error saving document:', error);
+        });
+
+        // beforeEach(() => {
+        //     hash = '1234567891';
+        //     sampleItemVal = {
+        //       name: 'sample item',
+        //       init: '10',
+        //       end: "5",
+        //       action: "5",
+        //       conditionals:[{name:'test'}]
+        //     };
+        // });
 
         it('GET by id /:hash should successfully return workflow', (done) => {
             request(app).get(`/workflow/${hash}`)

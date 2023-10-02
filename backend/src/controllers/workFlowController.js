@@ -1,4 +1,4 @@
-const { WorkFlowModel } = require('../models/workFlowModels')
+const  WorkFlowModel  = require('../models/workFlowModels')
 
 module.exports.getWorkflow = async (_req, res) => {
     try {
@@ -39,15 +39,19 @@ module.exports.getWorkflowById = async (req, res) => {
 
 module.exports.createWorkflow = async (req, res) => {
   const workflow = req.body
+  let arrCond = new Array()
+  arrCond = [{ type: 'condition_type', value: 'condition_value' }]
   try {
-    
-    let created = await WorkFlowModel.create({ workflow })
+
+    const data = new WorkFlowModel(workflow);
+    const result = await data.save();
     res.json({
-      data: created,
+      data: result,
       status: 201,
       message: 'workflow created successfully!'
   });
-  } catch (error) {
+  } catch (err) {
+    console.log(err);
     res.json({
       data: null,
       status: err.code || err.statusCode || 500,
@@ -61,9 +65,14 @@ module.exports.createWorkflow = async (req, res) => {
 module.exports.updateWorkflow = (req, res) => {
   const { id } = req.params
   const workflow = req.body
-  WorkFlowModel.findByIdAndUpdate(id, { workflow })
+  WorkFlowModel.findByIdAndUpdate(
+    { _id: id },
+    {
+      $set: workflow
+    },
+    { new: true } )
     .then((data) => {
-      console.log('updated workflow')
+      console.log('updated workflow',data)
       res.json({
         data: data,
         status: 200,

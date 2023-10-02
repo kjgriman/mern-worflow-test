@@ -12,6 +12,7 @@ router.get('/workflows', getWorkflow)
 router.get('/workflow/:id', getWorkflowById)
 router.post('/workflow', createWorkflow)
 router.put('/workflow/:id', updateWorkflow)
+router.patch('/workflow/:id', updateWorkflow)
 router.delete('/workflow/:id', deleteWorkflow)
 
 module.exports = router

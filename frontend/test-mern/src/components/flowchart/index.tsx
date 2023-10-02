@@ -1,24 +1,32 @@
 import { Canvas, Edge, Node, hasLink, NodeData, removeAndUpsertNodes } from 'reaflow';
 import './flowchart.css'
 import { useFlowChart } from '../../hooks/flowchart';
+import { useflowchartUI } from '../../hooks/flowchartUI';
 
 interface typeProps {
     init?: string,
     end?: string,
     conditions?: string[],
-    action?: string[],
+    actions?: string[],
 }
 
 export function FlowChartView(props: typeProps) {
-    const { init, end, conditions, action } = props;
+    const { init, end, conditions, actions,arrEdges } = props;
     const { 
         nodos, 
         edges, 
         selections, 
         setSelections, 
         setEdges, 
-        setNodos 
-    } = useFlowChart({ init, end, conditions,action })
+        setNodos ,
+        handlerEdge,
+        
+    } = useFlowChart({ init, end, conditions, actions,arrEdges })
+    const {
+        handleEdgesChange,
+        
+
+    } = useflowchartUI()
 
     return (
         <div className="overflow-scroll bg-gray-100">
@@ -33,6 +41,13 @@ export function FlowChartView(props: typeProps) {
                 }}
                 onNodeLink={(_event, from, to) => {
                     const id = `${from.id}-${to.id}`;
+                    
+                    handleEdgesChange({
+                        id,
+                        from: from.id,
+                        to: to.id
+                    })
+
                     setEdges([
                         ...edges,
                         {
@@ -51,12 +66,14 @@ export function FlowChartView(props: typeProps) {
                     setSelections([]);
                 }} />}
                 edge={<Edge onClick={(_event, edge) => {
+
                     setSelections([edge.id]);
                 }} onRemove={(_event, edge) => {
                     setEdges(edges.filter(e => e.id !== edge.id));
                     setSelections([]);
                 }} />} onCanvasClick={_event => {
                     setSelections([]);
+                    
                 }}
             />
         </div>

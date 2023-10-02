@@ -1,8 +1,6 @@
-import { Fragment, useRef } from 'react'
+import { Fragment, SetStateAction, useEffect, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { FlowChartView } from '../../flowchart';
-import { useflowchartUI } from '../../../hooks/flowchartUI';
-import { useFlowChart } from '../../../hooks/flowchart';
 
 interface SimpleDialogProps {
     open: boolean;
@@ -10,34 +8,73 @@ interface SimpleDialogProps {
     selected?: any;
 }
 
-export default function ModalCreate(props: SimpleDialogProps) {
-
-    const { onClose, open } = props;
+export default function ModalEdit(props: SimpleDialogProps) {
+    
+    
+    const { onClose, open,selected } = props;
     const cancelButtonRef = useRef(null)
+    console.log('selected',selected);
 
-    const {
-        handleChangeAction,
-        handleChange,
-        handlerEndBox,
-        handlerInitBox,
-        addInputAction,
-        addInputConditions,
-        initbox,
-        endbox,
-        arrAction,
-        arrCondition,
+    const [initbox, setInixBox] = useState('')
+    const [endbox, setEndBox] = useState('')
+    const [arr, setArr] = useState([]);
+    const [arrAction, setArrActions] = useState([]);
 
-    } = useflowchartUI()
-   
+    const addInput = () => {
+        setArr(s => {
+            return [
+                ...s,
+                {
+                    type: "text",
+                    value: "",
+                    id:''
+                }
+            ];
+        });
+    };
+    const addInputAction = () => {
+        setArrActions(s => {
+            return [
+                ...s,
+                {
+                    type: "text",
+                    value: "",
+                    id:''
+                }
+            ];
+        });
+    };
 
-    const { createWorflow } = useFlowChart(
-        {
-            init:initbox,
-            end:endbox,
-            actions:arrAction,
-            conditions:arrCondition
-        })
+    const handleChange = (e: { preventDefault: () => void; target: { id: any; value: any; }; }) => {
+        e.preventDefault();
+        const index = e.target.id.split('_');
+        setArr(s => {
+            const newArr = s.slice();
+            newArr[index[1]].value = e.target.value;
+            newArr[index[1]].id = e.target.id;
+            return newArr;
+        });
+    };
+    const handleChangeAction = (e: { preventDefault: () => void; target: { id: any; value: any; }; }) => {
+        e.preventDefault();
+        const index = e.target.id.split('_');
+        setArrActions(s => {
+            const newArrActions = s.slice();
+            newArrActions[index[1]].value = e.target.value;
+            newArrActions[index[1]].id = e.target.id;
+            return newArrActions;
+        });
+    };
 
+
+    const handlerInitBox = (e: { target: { value: SetStateAction<string>; }; }) => {
+        setInixBox(e.target.value)
+    }
+    const handlerEndBox = (e: { target: { value: SetStateAction<string>; }; }) => {
+        setEndBox(e.target.value)
+    }
+
+    
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -92,7 +129,7 @@ export default function ModalCreate(props: SimpleDialogProps) {
                                                     type="button"
                                                     disabled={initbox ? false : true}
                                                     className="disabled:bg-gray-200 inline-flex w-full justify-center rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                                                    onClick={addInputConditions}
+                                                    onClick={addInput}
                                                 >
                                                     + Conditions
                                                 </button>
@@ -123,7 +160,7 @@ export default function ModalCreate(props: SimpleDialogProps) {
                                                 </div>
                                                 {/* dinamyc input  */}
                                                 Conditions
-                                                {arrCondition.map((item: any, i) => {
+                                                {arr.map((item:any, i) => {
                                                     return (
                                                         <div className="my-2">
                                                             <input
@@ -139,7 +176,7 @@ export default function ModalCreate(props: SimpleDialogProps) {
                                                     );
                                                 })}
                                                 Actions
-                                                {arrAction.map((item: any, i) => {
+                                                {arrAction.map((item:any, i) => {
                                                     return (
                                                         <div className="my-2">
                                                             <input
@@ -155,7 +192,7 @@ export default function ModalCreate(props: SimpleDialogProps) {
                                                     );
                                                 })}
 
-                                                <FlowChartView init={initbox} end={endbox} conditions={arrCondition} actions={arrAction} />
+                                                <FlowChartView init={initbox} end={endbox} conditions={arr} actions={arrAction} />
                                             </div>
                                         </div>
                                     </div>
@@ -164,7 +201,7 @@ export default function ModalCreate(props: SimpleDialogProps) {
                                     <button
                                         type="button"
                                         className="inline-flex w-full justify-center rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                                        onClick={() => createWorflow()}
+                                        onClick={() => onClose()}
                                     >
                                         Create
                                     </button>
